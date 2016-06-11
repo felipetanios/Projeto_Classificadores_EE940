@@ -230,6 +230,27 @@ def zero_crossing_rate(wavedata, block_length, sample_rate):
 
 ## Root Mean Square ## 
 
+##Root Mean Square is a way of comparing arbitrary waveforms based upon their
+##equivalent energy. RMS voltage is the contant (DC) voltage that would be
+##required to produce the same heat in a resistive load, indicating equivalent
+##ability to do work. You can't use a simple "average voltage": Consider that
+##a sine wave has positive and negative phases that would average to zero, yet
+##it still generates heat regardless of the polarity of the voltage. The RMS
+##method takes the square of the instantaneous voltage before averaging, then
+##takes the square root of the average. This solves the polarity problem,
+##since the square of a negative value is the same as the square of a positive
+##value. For a sine wave, the RMS value thus computed is the same as the
+##amplitude (zero-to-peak value) divided by the square root of two, or about
+##0.7071 of the amplitude. For a repetitive waveform like this, an accurate
+##calculation can be done by averaging over a single cycle of the wave (or an
+##integer number of cycles), but for random noise sources the averaging time
+##must be long enough to get a good representation of the characteristics of
+##the source. For noise or signal bursts, the RMS value is still the effective
+##heating value, but of course it is reduced because the signal is not always
+##present. If you know the RMS value of the continuous signal, the true RMS of
+##the burst will be the continuous RMS times the square root of the fraction
+##of the time the signal is on.
+
 def root_mean_square(wavedata, block_length, sample_rate):
     
     # how many blocks have to be processed?
@@ -281,6 +302,21 @@ def spectral_rolloff(wavedata, window_size, sample_rate, k=0.85):
     sr = (sr / freqbins) * (sample_rate / 2.0)
     
     return sr, np.asarray(timestamps)
+
+## SPECTRAL FLUX ##
+
+def spectral_flux(wavedata, window_size, sample_rate):
+    
+    # convert to frequency domain
+    magnitude_spectrum = stft(wavedata, window_size)
+    timebins, freqbins = np.shape(magnitude_spectrum)
+    
+    # when do these blocks begin (time in seconds)?
+    timestamps = (np.arange(0,timebins - 1) * (timebins / float(sample_rate)))
+    
+    sf = np.sqrt(np.sum(np.diff(np.abs(magnitude_spectrum))**2, axis=1)) / freqbins
+    
+    return sf[1:], np.asarray(timestamps)
 
 
 ## KNN ##
