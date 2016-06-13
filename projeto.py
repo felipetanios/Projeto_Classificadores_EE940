@@ -42,22 +42,22 @@ for i in xrange(len(filenames)):
 
 ##CALCULO DE FLATNESS, CENTROIDE, ENERGIA E FLUXO ESPECTRAL PARA AS FAIXAS DE POP E ROCK
 
-flat_rock = []
-cent_rock = []
-rolloff_rock = []
-energy_rock = []
-sflux_rock = []
+flat_rock = [[]]
+cent_rock = [[]]
+rolloff_rock = [[]]
+energy_rock = [[]]
+sflux_rock = [[]]
 for fname in rock:
     wav2spec = spectrogram.Wav2Spectrogram() # Objeto que converte arquivos wav para espectrogramas
     s = wav2spec.convert(open(fname, 'rb'), window_length=1024, window_step=512, spectrum_type='magnitude')
 
     fness = flatness.Flatness()
     f = fness.calc_track(s)
-    f1 = np.average(f.data)
+    f1 = [np.average(f.data)]
     flat_rock.append(f1)
     centr = cent.Centroid()
     centroid = centr.calc_track(s)
-    centroid1 = np.average(centroid.data)
+    centroid1 = [np.average(centroid.data)]
     cent_rock.append(centroid1)
     # roff = roll.Rolloff()
     # roll_off = roff.calc_track(s)
@@ -65,29 +65,29 @@ for fname in rock:
     # rolloff_rock.append(roll_off1)
     en = energ.Energy()
     energy = en.calc_track(s)
-    energy1 = np.average(energy.data)
+    energy1 = [np.average(energy.data)]
     energy_rock.append(energy1)
     fl = specfl.Flux()
     flux = fl.calc_track(s)
-    flux1 = np.average(flux.data)
+    flux1 = [np.average(flux.data)]
     sflux_rock.append(flux1)
 
-flat_pop = []
-cent_pop = []
-rolloff_pop = []
-energy_pop = []
-sflux_pop = []
+flat_pop = [[]]
+cent_pop = [[]]
+rolloff_pop = [[]]
+energy_pop = [[]]
+sflux_pop = [[]]
 for fname in pop:
     wav2spec = spectrogram.Wav2Spectrogram() # Objeto que converte arquivos wav para espectrogramas
     s = wav2spec.convert(open(fname, 'rb'), window_length=1024, window_step=512, spectrum_type='magnitude')
 
     fness = flatness.Flatness()
     f = fness.calc_track(s)
-    f1 = np.average(f.data)
+    f1 = [np.average(f.data)]
     flat_pop.append(f1)
     centr = cent.Centroid()
     centroid = centr.calc_track(s)
-    centroid1 = np.average(centroid.data)
+    centroid1 = [np.average(centroid.data)]
     cent_pop.append(centroid1)
     # roff = roll.Rolloff()
     # roll_off = roff.calc_track(s)
@@ -95,38 +95,12 @@ for fname in pop:
     # rolloff_pop.append(roll_off1)
     en = energ.Energy()
     energy = en.calc_track(s)
-    energy1 = np.average(energy.data)
+    energy1 = [np.average(energy.data)]
     energy_pop.append(energy1)
     fl = specfl.Flux()
     flux = fl.calc_track(s)
-    flux1 = np.average(flux.data)
+    flux1 = [np.average(flux.data)]
     sflux_pop.append(flux1)
-
-# flat_rock_ = zeros(len(flat_rock))
-# cent_rock_ = zeros(len(cent_rock))
-# #rolloff_rock_ = zeros(len(rolloff_rock))
-# energy_rock_ = zeros(len(energy_rock))
-# sflux_rock_ = zeros(len(sflux_rock))
-
-# flat_pop_ = zeros(len(flat_pop))
-# cent_pop_ = zeros(len(cent_pop))
-# #rolloff_pop_ = zeros(len(rolloff_pop))
-# energy_pop_ = zeros(len(energy_pop))
-# sflux_pop_ = zeros(len(sflux_pop))
-
-# #for i in xrange(len(flat_rock)):
-# flat_rock_ = np.asarray(flat_rock)
-# cent_rock_ = np.asarray(cent_rock)
-# #rolloff_rock_ = np.asarray(rolloff_rock)
-# energy_rock_ = np.asarray(energy_rock)
-# sflux_rock_ = np.asarray(sflux_rock)
-
-# #for i in xrange(len(flat_pop)):
-# flat_pop_ = np.asarray(flat_pop)
-# cent_pop_ = np.asarray(cent_pop)
-# #rolloff_pop_ = np.asarray(rolloff_pop)
-# energy_pop_ = np.asarray(energy_pop)
-# sflux_pop_= np.asarray(sflux_pop)
 
 
 rock_ = []
@@ -136,7 +110,19 @@ for i in xrange(len(rock)):
 for i in xrange(len(pop)):
 	pop_.append(1)
 
-# ##teste com KNN
+
+flat_rock = flat_rock[1:]
+cent_rock = cent_rock[1:]
+#rolloff_rock = rolloff_rock[1:]
+energy_rock = energy_rock[1:]
+sflux_rock = sflux_rock[1:]
+
+flat_pop = flat_pop[1:]
+cent_pop = cent_pop[1:]
+#rolloff_pop = rolloff_pop[1:]
+energy_pop = energy_pop[1:]
+sflux_pop = sflux_pop[1:]
+##teste com KNN
 
 
 # Parametros para executar busca exaustiva
@@ -156,9 +142,7 @@ train_size_atual = train_size_min
 while train_size_atual <= train_size_max: # para cada tamanho do conjunto de treino
     acertos = []
     for k in xrange(n_iter): # para cada iteracao do processo Monte Carlo
-        dados_treino, dados_teste, rotulos_treino, rotulos_teste = train_test_split(energy_rock+ energy_pop, rock_ + pop_, train_size=train_size_atual)
-        print(dados_treino)
-        print(rotulos_treino)
+        dados_treino, dados_teste, rotulos_treino, rotulos_teste = train_test_split(cent_rock+ cent_pop, rock_ + pop_, train_size=train_size_atual)
         
         classificador = KNeighborsClassifier(n_neighbors=5) # n_neighbors = K
         classificador.fit(dados_treino, rotulos_treino)
@@ -173,7 +157,8 @@ while train_size_atual <= train_size_max: # para cada tamanho do conjunto de tre
 
 
 plt.figure();
-plt.errorbar(steps, medias, yerr=variancias);
-plt.ylabel('Indice de acertos');
-plt.xlabel('Tamanho do conjunto de treino');
+plt.errorbar(steps, medias, yerr=variancias)
+plt.ylabel('Indice de acertos')
+plt.xlabel('Tamanho do conjunto de treino')
+plt.show()
 
