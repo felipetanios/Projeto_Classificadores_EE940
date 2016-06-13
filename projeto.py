@@ -12,7 +12,7 @@ from scipy.io import wavfile
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.cross_validation import train_test_split
-
+from matplotlib import pyplot as plt
 
 
 ##vetor com todos os nomes dos arquivos .wav
@@ -102,31 +102,31 @@ for fname in pop:
     flux1 = np.average(flux.data)
     sflux_pop.append(flux1)
 
-flat_rock_ = zeros(len(flat_rock))
-cent_rock_ = zeros(len(cent_rock))
-#rolloff_rock_ = zeros(len(rolloff_rock))
-energy_rock_ = zeros(len(energy_rock))
-sflux_rock_ = zeros(len(sflux_rock))
+# flat_rock_ = zeros(len(flat_rock))
+# cent_rock_ = zeros(len(cent_rock))
+# #rolloff_rock_ = zeros(len(rolloff_rock))
+# energy_rock_ = zeros(len(energy_rock))
+# sflux_rock_ = zeros(len(sflux_rock))
 
-flat_pop_ = zeros(len(flat_pop))
-cent_pop_ = zeros(len(cent_pop))
-#rolloff_pop_ = zeros(len(rolloff_pop))
-energy_pop_ = zeros(len(energy_pop))
-sflux_pop_ = zeros(len(sflux_pop))
+# flat_pop_ = zeros(len(flat_pop))
+# cent_pop_ = zeros(len(cent_pop))
+# #rolloff_pop_ = zeros(len(rolloff_pop))
+# energy_pop_ = zeros(len(energy_pop))
+# sflux_pop_ = zeros(len(sflux_pop))
 
-#for i in xrange(len(flat_rock)):
-flat_rock_ = np.asarray(flat_rock)
-cent_rock_ = np.asarray(cent_rock)
-#rolloff_rock_ = np.asarray(rolloff_rock)
-energy_rock_ = np.asarray(energy_rock)
-sflux_rock_ = np.asarray(sflux_rock)
+# #for i in xrange(len(flat_rock)):
+# flat_rock_ = np.asarray(flat_rock)
+# cent_rock_ = np.asarray(cent_rock)
+# #rolloff_rock_ = np.asarray(rolloff_rock)
+# energy_rock_ = np.asarray(energy_rock)
+# sflux_rock_ = np.asarray(sflux_rock)
 
-#for i in xrange(len(flat_pop)):
-flat_pop_ = np.asarray(flat_pop)
-cent_pop_ = np.asarray(cent_pop)
-#rolloff_pop_ = np.asarray(rolloff_pop)
-energy_pop_ = np.asarray(energy_pop)
-sflux_pop_= np.asarray(sflux_pop)
+# #for i in xrange(len(flat_pop)):
+# flat_pop_ = np.asarray(flat_pop)
+# cent_pop_ = np.asarray(cent_pop)
+# #rolloff_pop_ = np.asarray(rolloff_pop)
+# energy_pop_ = np.asarray(energy_pop)
+# sflux_pop_= np.asarray(sflux_pop)
 
 
 rock_ = []
@@ -160,10 +160,10 @@ while train_size_atual <= train_size_max: # para cada tamanho do conjunto de tre
         print(dados_treino)
         print(rotulos_treino)
         
-        # classificador = KNeighborsClassifier(n_neighbors=5) # n_neighbors = K
-        # classificador.fit(dados_treino, rotulos_treino)
-        # score = classificador.score(dados_teste, rotulos_teste)
-        # acertos.append(score)
+        classificador = KNeighborsClassifier(n_neighbors=5) # n_neighbors = K
+        classificador.fit(dados_treino, rotulos_treino)
+        score = classificador.score(dados_teste, rotulos_teste)
+        acertos.append(score)
     
     steps.append(train_size_atual)
     medias.append(np.mean(np.array(acertos)))
@@ -177,5 +177,3 @@ plt.errorbar(steps, medias, yerr=variancias);
 plt.ylabel('Indice de acertos');
 plt.xlabel('Tamanho do conjunto de treino');
 
-classificador = KNeighborsClassifier(n_neighbors=5)
-classificador.fit(energy_rock + energy_pop, rock + pop)
